@@ -3,7 +3,7 @@ import time
 from opt import *
 from metrics import accuracy, auc, prf, metrics
 from dataload import dataloader
-from model import thsp_gcn
+from model import dfab_gcn
 import os
 from dataload import Logger
 if __name__ == '__main__':
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
             # The labels and model in this fold.
             labels = torch.tensor(y, dtype=torch.long).to(opt.device)
-            model = thsp_gcn().to(opt.device)
+            model = dfab_gcn().to(opt.device)
             print(model)
             loss_fn = torch.nn.CrossEntropyLoss()
             optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.wd)

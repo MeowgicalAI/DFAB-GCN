@@ -19,10 +19,10 @@ from datetime import datetime
 opt = OptInit().initialize()
 
 
-class Transhemispheric_Brain_Graph(torch.nn.Module):
+class Transhemispheric_Fusion_Graph(torch.nn.Module):
 
     def __init__(self):
-        super(Transhemispheric_Brain_Graph, self).__init__()
+        super(Transhemispheric_Fusion_Graph, self).__init__()
         self._setup()
         self.score_saver = ScoreSaver()
     def _setup(self):
@@ -126,9 +126,9 @@ class Transhemispheric_Brain_Graph(torch.nn.Module):
 
         return graph_embedding
 
-class Similarity_Population_Graph(nn.Module):
+class Graph_Embedding_Graph(nn.Module):
     def __init__(self):
-        super(Similarity_Population_Graph, self).__init__()
+        super(Graph_Embedding_Graph, self).__init__()
         self.num_layers = 4
 
         self.convs = nn.ModuleList()
@@ -198,15 +198,15 @@ class Similarity_Population_Graph(nn.Module):
 
         return x
 
-class thsp_gcn(torch.nn.Module):
+class dfab_gcn(torch.nn.Module):
 
     def __init__(self):
-        super(thsp_gcn, self).__init__()
+        super(dfab_gcn, self).__init__()
         self._setup()
 
     def _setup(self):
-        self.individual_graph_model = Transhemispheric_Brain_Graph()
-        self.population_graph_model = Similarity_Population_Graph()
+        self.individual_graph_model = Transhemispheric_Fusion_Graph()
+        self.population_graph_model = Graph_Embedding_Graph()
 
     def forward(self, graphs):
         dl = dataloader()

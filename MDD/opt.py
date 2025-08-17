@@ -6,7 +6,7 @@ import torch
 
 class OptInit():
     def __init__(self):
-        parser = argparse.ArgumentParser(description='PyTorch implementation of THSP-GCN')
+        parser = argparse.ArgumentParser(description='PyTorch implementation of DFAB-GCN')
         parser.add_argument('--train', default=1, type=int, help='train(default) or evaluate')
         parser.add_argument('--use_cpu', action='store_true', help='use cpu?')
         parser.add_argument('--lr', default=0.001, type=float, help='initial learning rate')
@@ -22,10 +22,10 @@ class OptInit():
         parser.add_argument('--labels_path', type=str, default=r"./phenotypic_information.csv", help='the path of the labels')
         parser.add_argument('--data_path', type=str, default=r'./data',help='the path of the data')
 
-        parser.add_argument('--alpha', default=0.65, type=float, help='adjacency threshold set when building  Transhemispheric Brain Graph')
-        parser.add_argument('--beta', default=0.35, type=float, help='adjacency threshold set when building Similarity Population Graph')
+        parser.add_argument('--alpha', default=0.65, type=float, help='adjacency threshold set when building  THF-GCN')
+        parser.add_argument('--beta', default=0.35, type=float, help='adjacency threshold set when building GEmb-GAT')
         parser.add_argument('--k1', default=0.9, type=float, help='the pooling ratio of the Self-Attention Graph Pooling')
-        parser.add_argument('--k2', default=0.5, type=float,help='the pooling ratio of the channel 2 of the Cluster compensation')
+        parser.add_argument('--k2', default=0.5, type=float,help='the pooling ratio of the channel 2 of the Dense-Diff-Pool')
 
         args = parser.parse_args()
 

@@ -11,10 +11,10 @@ from torch_geometric.nn.dense.diff_pool import dense_diff_pool
 from torch_geometric.nn import SAGPooling
 opt = OptInit().initialize()
 
-class Transhemispheric_Brain_Graph(torch.nn.Module):
+class Transhemispheric_Fusion_Graph(torch.nn.Module):
 
     def __init__(self):
-        super(Transhemispheric_Brain_Graph, self).__init__()
+        super(Transhemispheric_Fusion_Graph, self).__init__()
         self._setup()
     def _setup(self):
         self.graph_convolution_l_1 = GCNConv(112,64)
@@ -45,7 +45,7 @@ class Transhemispheric_Brain_Graph(torch.nn.Module):
         adj=adj.float()
         adj = adj.to(opt.device)
 
-        # --The graph convolutional neural network that integrates intrahemispheric and interhemispheric information  of the THSP-GCN.
+        # --The graph convolutional neural network that integrates intrahemispheric and interhemispheric information  of the DFAB-GCN.
 
         # Left and right hemisphere index of fmri data in the ABIDE dataset based on the HO Brain Atlas.
         leftBrain = torch.tensor([  6.,   5.,  55.,   1.,  98.,  71.,  73.,  77.,  63.,  96.,  79.,  15.,
@@ -87,7 +87,7 @@ class Transhemispheric_Brain_Graph(torch.nn.Module):
         # The interhemispheric convolution.
         node_features_2 = torch.nn.functional.leaky_relu(self.graph_convolution_g_1(node_features_2, edges, edge_attr))
 
-        # --The local–global dual-channel pooling (LGP) of the THSP-GCN.
+        # --The local–global dual-channel pooling (LGP) of the DFAB-GCN.
         # The channel 1
         pooling_features, edges, edge_attr,batch, perm, score = self.pooling_1(node_features_2, edges,edge_attr)
 
@@ -112,9 +112,9 @@ class Transhemispheric_Brain_Graph(torch.nn.Module):
         return graph_embedding
 
 
-class Similarity_Population_Graph(nn.Module):
+class Graph_Embedding_Graph(nn.Module):
     def __init__(self):
-        super(Similarity_Population_Graph, self).__init__()
+        super(Graph_Embedding_Graph, self).__init__()
         self.num_layers = 4
 
         self.convs = nn.ModuleList()
@@ -184,15 +184,15 @@ class Similarity_Population_Graph(nn.Module):
 
         return x
 
-class thsp_gcn(torch.nn.Module):
+class dfab_gcn(torch.nn.Module):
 
     def __init__(self):
-        super(thsp_gcn, self).__init__()
+        super(dfab_gcn, self).__init__()
         self._setup()
 
     def _setup(self):
-        self.individual_graph_model = Transhemispheric_Brain_Graph()
-        self.population_graph_model = Similarity_Population_Graph()
+        self.individual_graph_model = Transhemispheric_Fusion_Graph()
+        self.population_graph_model = Graph_Embedding_Graph()
 
     def forward(self, graphs):
         dl = dataloader()
@@ -203,7 +203,7 @@ class thsp_gcn(torch.nn.Module):
             embedding= self.individual_graph_model(graph)
             embeddings.append(embedding)
         embeddings = torch.cat(tuple(embeddings))
-        # Similarity_Population_Graph
+        # Graph_Embedding_Graph
         edge_index= dl.get_inputs(embeddings)
         #edge_index = torch.tensor(edge_index, dtype=torch.long).to(opt.device)
         edge_index = edge_index.detach().to(opt.device)
