@@ -1,6 +1,6 @@
 # DFAB-GCN
 
-**A Graph Convolutional Framework for ASD Classification and Model-Level Analysis**
+**A graph convolutional network framework for ASD classification and model-level analysis of candidate ASD-related regions**
 
 ![DFAB-GCN architecture](figure1.PNG)
 
