@@ -1,63 +1,89 @@
 # DFAB-GCN
 
-**DFAB-GCN: A graph convolutional network framework for ASD classification and model-level analysis of candidate ASD-related regions**
+**A Graph Convolutional Framework for ASD Classification and Model-Level Analysis**
 
-![Overview of the DFAB-GCN architecture](figure1.PNG)
+![DFAB-GCN architecture](figure1.PNG)
+
+[![Paper](https://img.shields.io/badge/Paper-ScienceDirect-blue)](https://www.sciencedirect.com/science/article/pii/S1746809426011341)
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.bspc.2026.110580-blue)](https://doi.org/10.1016/j.bspc.2026.110580)
+[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-EE4C2C)](https://pytorch.org/)
+[![PyG](https://img.shields.io/badge/PyG-2.6.1-3C2179)](https://pytorch-geometric.readthedocs.io/)
 
 ## Overview
 
-DFAB-GCN is a graph neural network framework for classifying Autism Spectrum Disorder (ASD) from functional magnetic resonance imaging (fMRI) data. The model is designed to learn discriminative representations from brain connectivity graphs while integrating information across the two cerebral hemispheres.
+DFAB-GCN is an end-to-end graph neural network framework for Autism Spectrum Disorder (ASD) classification using resting-state functional magnetic resonance imaging (rs-fMRI). It models brain connectivity at both the individual and population levels while preserving subject-specific differences.
 
-In addition to ASD classification, DFAB-GCN supports model-level interpretability analysis. It can be used to identify candidate ASD-related brain regions and investigate the functional associations captured by the model.
+Beyond classification, DFAB-GCN integrates data-driven modeling with interpretability analysis. The framework identifies candidate ASD-related brain regions and provides model-level evidence for associations between regional importance and ASD-related functional differences.
 
-## Highlights
+Experiments reported in the accompanying paper demonstrate competitive classification performance on the ABIDE dataset and evaluate the model's generalization potential through supplementary cross-dataset analysis.
 
-- Graph-based representation learning for fMRI-derived brain connectivity data
-- Transhemispheric feature fusion for modeling interactions between the cerebral hemispheres
-- End-to-end ASD classification
-- Model-level analysis of candidate ASD-related brain regions
-- Support for biomarker-oriented interpretability studies
+> **Research-use notice:** This repository is intended for academic research and is not a clinical diagnostic system.
 
-## Publication
+## Model Architecture
 
-For the methodology and experimental results, see the accompanying article:
+DFAB-GCN consists of three main components:
 
-[A graph convolutional network framework for ASD classification and model-level analysis of candidate ASD-related regions](https://www.sciencedirect.com/science/article/abs/pii/S1746809426011341)
+### 1. Transhemispheric Fusion Graph Convolutional Network (THF-GCN)
 
-If you use this repository in your research, please cite the article. A complete BibTeX entry should be added here once the final bibliographic metadata is available.
+THF-GCN models information exchange between the left and right cerebral hemispheres. It combines Self-Attention Graph Pooling and Dense Differentiable Pooling to capture complementary local and global representations while reducing redundant brain-region information.
+
+### 2. Graph Embedding Graph Attention Network (GEmb-GAT)
+
+GEmb-GAT constructs a population graph from individual-level representations using cosine similarity. A Graph Transformer then learns latent interaction patterns across subjects while retaining subject-specific characteristics.
+
+### 3. Probability-Based Functional Association (PBFA)
+
+PBFA combines brain-region importance scores with within-group probability statistics. It supports the identification of candidate ASD-related regions and the model-level analysis of between-group differences in regional importance.
+
+## Key Features
+
+- End-to-end ASD classification from rs-fMRI-derived brain graphs
+- Joint modeling of individual brain graphs and population-level relationships
+- Explicit fusion of information across the two cerebral hemispheres
+- Dual-channel graph pooling for complementary local and global representations
+- Candidate brain-region identification through model-level interpretability analysis
+- Optional validation support during training
+
+## Repository
+
+```text
+DFAB-GCN/
+├── main.py
+├── requirements.txt
+├── figure1.PNG
+└── ...
+```
+
+The exact directory structure may vary with the repository version. See the source code for dataset paths, configuration fields, and output locations.
 
 ## Requirements
 
 The reference environment is:
 
-- Python 3.10
-- CUDA 12.1
-- PyTorch 2.5.1
-- PyTorch Geometric 2.6.1
+| Component | Version |
+|---|---:|
+| Python | 3.10 |
+| CUDA | 12.1 |
+| PyTorch | 2.5.1 |
+| PyTorch Geometric | 2.6.1 |
+| `torch_cluster` | 1.6.3 |
+| `torch_scatter` | 2.1.2 |
+| `torch_sparse` | 0.6.18 |
+| `torch_spline_conv` | 1.2.2 |
 
-The following PyTorch Geometric extension packages were used:
-
-- `torch_cluster==1.6.3+pt25cu121`
-- `torch_scatter==2.1.2+pt25cu121`
-- `torch_sparse==0.6.18+pt25cu121`
-- `torch_spline_conv==1.2.2+pt25cu121`
-
-> CUDA support is recommended for training but is not required for basic code inspection or CPU execution. If you use another PyTorch or CUDA version, install the matching PyTorch Geometric wheels.
+CUDA is recommended for GPU training. If you use a different PyTorch or CUDA version, install the corresponding PyTorch Geometric extension wheels.
 
 ## Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/MeowgicalAI/DFAB-GCN.git
 cd DFAB-GCN
 ```
 
-Replace `<REPOSITORY_URL>` with the URL of this repository.
-
 ### 2. Create an isolated environment
-
-Using Conda:
 
 ```bash
 conda create -n dfab-gcn python=3.10 -y
@@ -79,22 +105,17 @@ For CPU-only execution:
 pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 ```
 
-### 4. Install PyTorch Geometric and its extensions
+### 4. Install PyTorch Geometric
 
 For PyTorch 2.5.x with CUDA 12.1:
 
 ```bash
-pip install \
-  torch_cluster==1.6.3 \
-  torch_scatter==2.1.2 \
-  torch_sparse==0.6.18 \
-  torch_spline_conv==1.2.2 \
-  -f https://data.pyg.org/whl/torch-2.5.0+cu121.html
+pip install torch_cluster==1.6.3 torch_scatter==2.1.2 torch_sparse==0.6.18 torch_spline_conv==1.2.2 -f https://data.pyg.org/whl/torch-2.5.0+cu121.html
 
 pip install torch_geometric==2.6.1
 ```
 
-For a different PyTorch or CUDA version, select the corresponding wheel index from the [official PyTorch Geometric installation guide](https://pytorch-geometric.readthedocs.io/en/2.6.1/install/installation.html).
+For a different environment, select the matching wheel index from the [official PyTorch Geometric installation guide](https://pytorch-geometric.readthedocs.io/en/2.6.1/install/installation.html).
 
 ### 5. Install the remaining dependencies
 
@@ -102,88 +123,134 @@ For a different PyTorch or CUDA version, select the corresponding wheel index fr
 pip install -r requirements.txt
 ```
 
-To keep the environment reproducible, `requirements.txt` should contain only project-specific dependencies and should not override the PyTorch or PyTorch Geometric versions installed above.
+For reproducibility, `requirements.txt` should contain project-specific dependencies without overriding the PyTorch or PyTorch Geometric versions installed above.
 
-### 6. Verify the environment
+### 6. Verify the installation
 
 ```bash
 python -c "import torch; import torch_geometric; print('PyTorch:', torch.__version__); print('PyG:', torch_geometric.__version__); print('CUDA available:', torch.cuda.is_available()); print('CUDA version:', torch.version.cuda)"
 ```
 
-For the recommended GPU environment, the output should report PyTorch 2.5.1, PyTorch Geometric 2.6.1, and CUDA 12.1.
+For the recommended GPU environment, the output should report:
+
+```text
+PyTorch: 2.5.1+cu121
+PyG: 2.6.1
+CUDA available: True
+CUDA version: 12.1
+```
 
 ## Data Preparation
 
-Prepare the fMRI-derived graph data before training and update the dataset paths and experiment settings required by the repository.
+Prepare the rs-fMRI-derived graph data before training and update the dataset paths and experiment settings required by the code.
 
-To make an experiment reproducible, record at least the following information:
+For reproducible experiments, document the following:
 
 - Dataset name and preprocessing pipeline
-- Node definitions and graph construction method
-- Feature and adjacency-matrix formats
+- Brain atlas and region-of-interest definitions
+- Node features and graph-construction method
+- Feature-matrix and adjacency-matrix formats
 - Training, validation, and test splits
-- Random seed
+- Random seeds
 - Evaluation metrics
 
 Do not commit private, restricted, or personally identifiable neuroimaging data to the repository.
 
 ## Training and Prediction
 
-Run the main entry point to train DFAB-GCN and generate predictions:
+Run the main entry point to train the model and generate predictions:
 
 ```bash
 python main.py
 ```
 
-If validation data are supported by the current implementation, enable them through the corresponding runtime arguments or configuration file. Before training on a new dataset, review and tune the relevant hyperparameters, including the learning rate, hidden dimensions, dropout rate, batch size, and graph-construction settings.
+If supported by the current code version, provide a validation set through the relevant runtime arguments or configuration fields.
+
+For a new dataset, consider tuning:
+
+- Learning rate and weight decay
+- Hidden dimensions
+- Dropout rate
+- Batch size
+- Graph-construction threshold
+- Population-graph similarity settings
+- Pooling ratio
 
 ## Reproducibility
 
-For reliable comparisons, we recommend reporting:
+For reliable comparisons, report:
 
-- Exact dataset split or cross-validation protocol
+- Dataset split or cross-validation protocol
 - Random seeds and number of repeated runs
 - Mean and standard deviation across runs
 - Accuracy, sensitivity, specificity, F1 score, and ROC-AUC
 - Hardware and software versions
 - Hyperparameters used for the reported results
 
-Where possible, save model checkpoints, prediction files, and experiment logs under clearly named output directories.
+Where possible, retain model checkpoints, prediction files, and experiment logs under clearly named output directories.
 
 ## Troubleshooting
 
-### PyTorch Geometric reports an undefined symbol
+### Undefined symbols when importing PyTorch Geometric
 
-This usually indicates a mismatch between PyTorch, CUDA, and one or more PyTorch Geometric extension wheels. Check the installed versions:
+This usually indicates a mismatch among PyTorch, CUDA, and the PyTorch Geometric extension wheels.
+
+Check the installed versions:
 
 ```bash
 python -c "import torch; print(torch.__version__); print(torch.version.cuda)"
 pip show torch-geometric torch-scatter torch-sparse torch-cluster torch-spline-conv
 ```
 
-Reinstall the extension packages using the wheel index that matches both the installed PyTorch version and its CUDA build.
+Reinstall the extensions using a wheel index that matches both the installed PyTorch version and its CUDA build.
 
 ### CUDA is not available
 
-Check the environment:
+Check the NVIDIA driver and PyTorch environment:
 
 ```bash
 nvidia-smi
 python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
 ```
 
-The CUDA version bundled with PyTorch must be compatible with the installed NVIDIA driver. A full local CUDA toolkit is not required for most pre-built PyTorch wheels, but a compatible NVIDIA driver is required.
+The CUDA runtime bundled with PyTorch must be compatible with the installed NVIDIA driver. Most pre-built PyTorch wheels do not require a complete local CUDA toolkit, but they do require a compatible NVIDIA driver.
+
+### Out-of-memory errors
+
+Try one or more of the following:
+
+- Reduce the batch size
+- Reduce the hidden dimensions or pooling ratio
+- Disable unnecessary cached tensors
+- Use mixed-precision training if supported by the implementation
+- Close other GPU processes
+
+## Citation
+
+If you use DFAB-GCN in your research, please cite:
+
+```bibtex
+@article{meng2026dfabgcn,
+  title   = {A graph convolutional network framework for ASD classification and model-level analysis of candidate ASD-related regions},
+  author  = {Meng, Lu and Zhu, Weitao and Gao, Shuoqian and Xie, Keli and Li, Zheng and Wu, Rina and Lin, Xuejie},
+  journal = {Biomedical Signal Processing and Control},
+  volume  = {123},
+  pages   = {110580},
+  year    = {2026},
+  doi     = {10.1016/j.bspc.2026.110580}
+}
+```
 
 ## Contributing
 
-Issues and pull requests are welcome. When reporting a problem, please include:
+Issues and pull requests are welcome. When reporting a problem, include:
 
 - Operating system
 - Python version
 - PyTorch and PyTorch Geometric versions
 - CUDA version, if applicable
 - Full error message
-- Minimal steps needed to reproduce the issue
+- Minimal steps required to reproduce the issue
 
 If this project supports your research, consider starring the repository and citing the associated publication.
 
