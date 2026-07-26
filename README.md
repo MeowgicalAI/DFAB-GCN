@@ -1,6 +1,6 @@
 # DFAB-GCN
 
-**DFAB-GCN: Transhemispheric Brain Fusion Graph Convolution Model for Autism Spectrum Disorder Diagnosis**
+**DFAB-GCN: A graph convolutional network framework for ASD classification and model-level analysis of candidate ASD-related regions**
 
 ![Overview of the DFAB-GCN architecture](figure1.PNG)
 
