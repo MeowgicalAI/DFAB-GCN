@@ -44,57 +44,29 @@ Candidate brain-region identification through model-level interpretability analy
 
 Optional validation support during training
 
-Repository
-
-DFAB-GCN/
-├── main.py
-├── requirements.txt
-├── figure1.PNG
-└── ...
-
-The exact directory structure may vary with the repository version. See the source code for dataset paths, configuration fields, and output locations.
-
 Requirements
 
 The reference environment is:
 
-Component
+Python 3.10
 
-Version
+CUDA 12.1
 
-Python
+PyTorch 2.5.1
 
-3.10
+PyTorch Geometric 2.6.1
 
-CUDA
+The following PyTorch Geometric extension packages were used:
 
-12.1
+torch_cluster==1.6.3+pt25cu121
 
-PyTorch
+torch_scatter==2.1.2+pt25cu121
 
-2.5.1
+torch_sparse==0.6.18+pt25cu121
 
-PyTorch Geometric
+torch_spline_conv==1.2.2+pt25cu121
 
-2.6.1
-
-torch_cluster
-
-1.6.3
-
-torch_scatter
-
-2.1.2
-
-torch_sparse
-
-0.6.18
-
-torch_spline_conv
-
-1.2.2
-
-CUDA is recommended for GPU training. If you use a different PyTorch or CUDA version, install the corresponding PyTorch Geometric extension wheels.
+CUDA support is recommended for training but is not required for basic code inspection or CPU execution. If you use another PyTorch or CUDA version, install the matching PyTorch Geometric wheels.
 
 Installation
 
